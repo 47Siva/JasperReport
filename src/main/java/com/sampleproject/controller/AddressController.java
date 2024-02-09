@@ -23,30 +23,30 @@ import net.sf.jasperreports.engine.JRException;
 @RestController
 @RequestMapping("/api/address")
 public class AddressController {
-	
+
 	@Autowired
-	AddressService addressService ;
+	AddressService addressService;
 
 	@PostMapping("/pot")
-	public Address create (@RequestBody Address address) {
-		return addressService.store(address); 
+	public Address create(@RequestBody Address address) {
+		return addressService.store(address);
 	}
-	
+
 	@GetMapping("/get")
-	public List<Address> getAll ()
-	{
+	public List<Address> getAll() {
 		return addressService.getall();
 	}
-	
+
+	// get the report in chrome
 	@GetMapping("/getreport/{report}")
-	public String generatedReport(@PathVariable ("report") String report) throws FileNotFoundException,JRException{
-		
+	public String generatedReport(@PathVariable("report") String report) throws FileNotFoundException, JRException {
+
 		addressService.exportReport(report);
-		
-		return  "YOUR REPORT GENERATED 😁😍";
+
+		return "YOUR REPORT GENERATED 😁😍";
 
 	}
-	
+
 //	@GetMapping("/generatepdf")
 //	public ResponseEntity<byte[]> generatepdf() throws FileNotFoundException,JRException
 //	{
@@ -68,29 +68,42 @@ public class AddressController {
 //	        .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
 //	        .body(data);
 //	}
-	
-	@GetMapping(value = "getListReport" )
-	public ResponseEntity<byte [] > generateReport() throws FileNotFoundException, JRException{
-		
-		byte [] reports = addressService.generateReport();
+
+	//get the report in post man in normol
+	@GetMapping(value = "getListReport")
+	public ResponseEntity<byte[]> generateReport() throws FileNotFoundException, JRException {
+
+		byte[] reports = addressService.generateReport();
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_PDF);
 //		header.setContentDispositionFormData("attachment", "report.pdf");
-		return new ResponseEntity<>(reports,header,HttpStatus.OK);
-		
+		return new ResponseEntity<>(reports, header, HttpStatus.OK);
+
 	}
-	
+
 	@GetMapping("getany/{key}")
-	public List<Address> getany(@PathVariable ("key") Object key){
+	public List<Address> getany(@PathVariable("key") Object key) {
 		return addressService.getAny(key);
 	}
-	
+
+	// get the report in post man in felter mathod
 	@GetMapping("getBykey/{key}")
-	public ResponseEntity<byte [] >getBykey(@PathVariable ("key") Object key) throws FileNotFoundException, JRException {
-		byte [] reports = addressService.getBykey(key);
+	public ResponseEntity<byte[]> getBykey(@PathVariable("key") Object key) throws FileNotFoundException, JRException {
+		byte[] reports = addressService.getBykey(key);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_PDF);
-		return new ResponseEntity<>(reports,header,HttpStatus.OK);
+		return new ResponseEntity<>(reports, header, HttpStatus.OK);
 	}
-	
+
+	// get the report in chrome in felter method 
+	@GetMapping("getBykeyFormat/{key}/{report}")
+	public Object getByKeyFomat(@PathVariable("key") Object key,
+			                    @PathVariable ("report") String format) throws FileNotFoundException, JRException {
+
+		addressService.getBykeyFormat(key,format);
+
+		return "YOUR REPORT GENERATED 😁😍";
+
+	}
+
 }

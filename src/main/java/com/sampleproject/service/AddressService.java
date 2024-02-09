@@ -35,13 +35,18 @@ public class AddressService {
 		return addressRepository.findAll();
 	}
 
+	// get report in chrome
 	public String exportReport(String reportFormat) throws FileNotFoundException, JRException {
 
 		List<Address> address = addressRepository.findAll();
-		String path = "C:\\Users\\VC\\Desktop\\report";
+		
+		//download path
+		String path = "C:\\Users\\VC\\Desktop\\ReportsAndSave\\report";
+		
+		//upload path
 		String filepath = "C:\\Users\\VC\\Documents\\workspace-spring-tool-suite-4-4.20.0.RELEASE\\springboot-jasper-report\\src\\main\\resources\\Report\\Address.jrxml";
 
-		// load file and compile it
+		// load filepath and compile it
 		File file = ResourceUtils.getFile(filepath);
 		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
 
@@ -72,6 +77,7 @@ public class AddressService {
 //		return addressRepository.findAll();
 //	}
 
+	// get report in post man
 	public byte[] generateReport() throws JRException, FileNotFoundException {
 
 		List<Address> address = addressRepository.findAll();
@@ -96,6 +102,7 @@ public class AddressService {
 	}
 
 	
+	//get the report in post man in felter method
 	public byte[] getBykey(Object key) throws FileNotFoundException, JRException {
 		
 		List<Address> address = addressRepository.findBykey(key);
@@ -113,6 +120,39 @@ public class AddressService {
 		// print jasper report
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource);
 		return JasperExportManager.exportReportToPdf(jasperPrint);
+	}
+
+	//get the report in chrome man in felter method 
+	public String getBykeyFormat(Object key, String reportFormat) throws FileNotFoundException, JRException {
+		List<Address> address = addressRepository.findBykey(key);
+		String path = "C:\\Users\\VC\\Desktop\\newReport";
+		String filepath = "C:\\Users\\VC\\Documents\\workspace-spring-tool-suite-4-4.20.0.RELEASE\\springboot-jasper-report\\src\\main\\resources\\Report\\Address.jrxml";
+
+		// load file and compile it
+		File file = ResourceUtils.getFile(filepath);
+		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+
+		// maping jasper report and find all
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(address);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("createdBy", "😎");
+
+		// print jasper report
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource);
+
+		// Html format
+		if (reportFormat.equalsIgnoreCase("html")) {
+			JasperExportManager.exportReportToHtmlFile(jasperPrint, path + "\\address.html");
+		}
+		// pdf format
+		if (reportFormat.equalsIgnoreCase("pdf")) {
+			JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\address.pdf");
+		}
+
+		//
+		return "report generatedin in path : " + path;
+		
 	}
 
 }
